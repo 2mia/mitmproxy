@@ -9,6 +9,7 @@ import threading
 from netlib import http, tcp, http_status
 import netlib.utils
 from netlib.odict import ODict, ODictCaseless
+from libmproxy.proxy.primitives import XXXProxyMode
 from .tcp import TCPHandler
 from .primitives import KILL, ProtocolHandler, Flow, Error
 from ..proxy.connection import ServerConnection
@@ -1294,6 +1295,13 @@ class HTTPHandler(ProtocolHandler):
                     # value at flow.server_conn
                     self.c.set_server_address((request.host, request.port))
                     flow.server_conn = self.c.server_conn
+
+            if self.c.config.mode == "xxx": #XXXProxyMode.name
+                request.host = request.headers["Host"][0]
+                request.port = 80
+                self.c.set_server_address((request.host, request.port))
+                flow.server_conn = self.c.server_conn
+
 
             return None
         raise http.HttpError(

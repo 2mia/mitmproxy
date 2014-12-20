@@ -348,6 +348,11 @@ def common_options(parser):
         help="Set transparent proxy mode."
     )
     group.add_argument(
+        "-X", "--xxx",
+        action="store_true", dest="xxx_proxy", default=False,
+        help="Set super transparent proxy mode."
+    )
+    group.add_argument(
         "-U", "--upstream",
         action="store",
         type=parse_server_spec,

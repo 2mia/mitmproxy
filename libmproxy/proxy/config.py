@@ -3,7 +3,7 @@ import os
 import re
 from netlib import http_auth, certutils, tcp
 from .. import utils, platform, version
-from .primitives import RegularProxyMode, TransparentProxyMode, UpstreamProxyMode, ReverseProxyMode, Socks5ProxyMode
+from .primitives import RegularProxyMode, TransparentProxyMode, UpstreamProxyMode, ReverseProxyMode, Socks5ProxyMode, XXXProxyMode
 
 TRANSPARENT_SSL_PORTS = [443, 8443]
 CONF_BASENAME = "mitmproxy"
@@ -59,6 +59,8 @@ class ProxyConfig:
 
         if mode == "transparent":
             self.mode = TransparentProxyMode(platform.resolver(), ssl_ports)
+        elif mode == "xxx":
+            self.mode = XXXProxyMode()
         elif mode == "socks5":
             self.mode = Socks5ProxyMode(ssl_ports)
         elif mode == "reverse":
@@ -93,6 +95,9 @@ def process_proxy_options(parser, options):
         if not platform.resolver:
             return parser.error("Transparent mode not supported on this platform.")
         mode = "transparent"
+    if options.xxx_proxy:
+        c += 1
+        mode = "xxx"
     if options.socks_proxy:
         c += 1
         mode = "socks5"
